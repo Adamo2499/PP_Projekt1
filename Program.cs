@@ -3,35 +3,35 @@ using System.IO;
 using Excel = Microsoft.Office.Interop.Excel;
 namespace PP_Projekt1 {
     class Program {
-        static Double DlugoscTworzacej(Double promien, Double wysokosc) {
-            Double tworzaca;
+        static Double sideLength(Double promien, Double wysokosc) {
+            Double side;
             if (promien <= 0 || wysokosc <= 0) {
                 throw new ArgumentException("Promień podstawy oraz wysokość muszą być większe od 0");
             }
             else {
-                tworzaca = Math.Sqrt(promien * promien + wysokosc * wysokosc);
-                return tworzaca;
+                side = Math.Sqrt(promien * promien + wysokosc * wysokosc);
+                return side;
             }
             
         }
-        static Double PoleStozka(Double promien, Double tworzaca) {
-            Double pStozka;
-            if (promien <= 0 || tworzaca <= 0) {
+        static Double coneArea(Double promien, Double side) {
+            Double coneArea;
+            if (promien <= 0 || side <= 0) {
                 throw new ArgumentException("Promień podstawy oraz tworząca stożka musi być wieksza od 0");
             }
             else {
-                pStozka = (Math.PI * promien * promien) + (Math.PI * promien * tworzaca);
-                return pStozka;
+                coneArea = (Math.PI * promien * promien) + (Math.PI * promien * side);
+                return coneArea;
             }
         }
-        static Double PoleSzescianu(Double a) {
-            Double pSzescianu;
+        static Double cubeArea(Double a) {
+            Double cubeArea;
             if (a <= 0) {
                 throw new ArgumentException("Długość boku sześcianu musi być większa od 0");
             }
             else {
-                pSzescianu = 6 * a * a;
-                return pSzescianu;
+                cubeArea = 6 * a * a;
+                return cubeArea;
             }
         }
         public static void WygenerujSciezki(out String xls, out String xlsx) {
@@ -39,7 +39,7 @@ namespace PP_Projekt1 {
             xls = Path.Combine(SciezkaDoDokumentow, "Projekt_AB.xls");
             xlsx = Path.Combine(SciezkaDoDokumentow, "Projekt_AB.xlsx");
         }
-        static void EksportujDoExcela(Double promienStozka, Double wysokoscStozka, Double dlugoscTworzacej, Double pStożka, Double bokSzescianu, Double pSześcianu, Double sumaPol) {            
+        static void EksportujDoExcela(Double coneRadius, Double coneHeight, Double sideLength, Double coneArea, Double bokSzescianu, Double pSześcianu, Double areaSum) {            
             WygenerujSciezki(out String xls,out String xlsx);
             Excel.Application excelApp = new Excel.Application();
             Excel._Workbook excelWorkBook = excelApp.Workbooks.Add();
@@ -72,13 +72,13 @@ namespace PP_Projekt1 {
                 excelWorkSheet.Cells[1, "F"] = "Pole sześcianu";
                 excelWorkSheet.Cells[1, "G"] = "Suma pól";
 
-                excelWorkSheet.Cells[2, "A"] = promienStozka;
-                excelWorkSheet.Cells[2, "B"] = wysokoscStozka;
-                excelWorkSheet.Cells[2, "C"] = dlugoscTworzacej;
-                excelWorkSheet.Cells[2, "D"] = pStożka;
+                excelWorkSheet.Cells[2, "A"] = coneRadius;
+                excelWorkSheet.Cells[2, "B"] = coneHeight;
+                excelWorkSheet.Cells[2, "C"] = sideLength;
+                excelWorkSheet.Cells[2, "D"] = coneArea;
                 excelWorkSheet.Cells[2, "E"] = bokSzescianu;
                 excelWorkSheet.Cells[2, "F"] = pSześcianu;
-                excelWorkSheet.Cells[2, "G"] = sumaPol;
+                excelWorkSheet.Cells[2, "G"] = areaSum;
                 #endregion
                 try {
                     if (!File.Exists(xls) || !File.Exists(xlsx)) {
@@ -100,7 +100,7 @@ namespace PP_Projekt1 {
         }
         static void Main() {
             Console.Title = "Program do obliczania pól figur przestrzennych oraz eksportu danych do Excela";
-            Double a, r, H, l, poleStozka, poleSzescianu, sumaPol;
+            Double a, r, H, l, ConeArea, CubeArea, areaSum;
         //pole stożka
         daneDoStozka:
             Console.WriteLine("Podaj promień podstawy stożka: ");
@@ -132,7 +132,7 @@ namespace PP_Projekt1 {
 
                 // metody dotyczące pola stożka
             try {
-                l = DlugoscTworzacej(r, H);
+                l = sideLength(r, H);
                 Console.WriteLine($"Długość tworzącej wynosi: {l:n2}");
             }
             catch(ArgumentException exp) {
@@ -141,8 +141,8 @@ namespace PP_Projekt1 {
                 goto daneDoStozka;
             }
             try {
-                poleStozka = PoleStozka(r, l);
-                Console.Write($"Pole stożka wynosi {poleStozka:n2} \n");
+                ConeArea = coneArea(r, l);
+                Console.Write($"Pole stożka wynosi {ConeArea:n2} \n");
             }
             catch (ArgumentException exp) {
                 Console.WriteLine(exp.Message);
@@ -152,8 +152,8 @@ namespace PP_Projekt1 {
             
                 //metoda dotycząca pola sześcianu
             try {
-                poleSzescianu = PoleSzescianu(a);
-                Console.WriteLine($"Pole sześcianu wynosi: {poleSzescianu:n2}");
+                CubeArea = cubeArea(a);
+                Console.WriteLine($"Pole sześcianu wynosi: {CubeArea:n2}");
             }
             catch (ArgumentException exp) {
                 Console.WriteLine(exp.Message);
@@ -163,12 +163,12 @@ namespace PP_Projekt1 {
             Console.WriteLine();
 
             // Suma pól
-            sumaPol = poleStozka + poleSzescianu;
-            Console.WriteLine($"Suma pól wynosi {sumaPol:n2}");
+            areaSum = ConeArea + CubeArea;
+            Console.WriteLine($"Suma pól wynosi {areaSum:n2}");
 
             // eksportowanie danych do Excela
             Console.WriteLine("Teraz dokonuję eksportu podanych danych do Excela...");
-            EksportujDoExcela(r, H, l, poleStozka, a, poleSzescianu,sumaPol);
+            EksportujDoExcela(r, H, l, ConeArea, a, CubeArea,areaSum);
             Console.WriteLine("Eksport danych zakończył się sukcesem!");
             Console.WriteLine();
             Console.WriteLine("Wyeksportowane dane można znaleźć w folderze Dokumenty (pliki Projekt_AB.xls i Projekt_AB.xlsx; w przypadku ponownego wywołania programu dane będą zapisywane w pliku Zeszyt1.xlsx)");
