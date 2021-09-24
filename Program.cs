@@ -103,7 +103,7 @@ namespace PP_Projekt1 {
             Double a, r, H, l, ConeArea, CubeArea, areaSum;
         //pole stożka
         daneDoStozka:
-            Console.WriteLine("Podaj promień podstawy stożka: ");
+            Console.Write("Podaj promień podstawy stożka: ");
             try{
                 r = Double.Parse(Console.ReadLine());
             }
@@ -111,7 +111,7 @@ namespace PP_Projekt1 {
                 Console.WriteLine("Podano niepoprawne dane!");
                 goto daneDoStozka;
             }
-            Console.WriteLine("Podaj wysokość stożka: ");
+            Console.Write("Podaj wysokość stożka: ");
             try {
                 H = Double.Parse(Console.ReadLine());
             }
@@ -120,7 +120,7 @@ namespace PP_Projekt1 {
                 goto daneDoStozka;
             }
         daneDoSzescianu:
-            Console.WriteLine("Podaj długość boku sześcianu: ");
+            Console.Write("Podaj długość boku sześcianu: ");
             try {
                 a = Double.Parse(Console.ReadLine());
             }
